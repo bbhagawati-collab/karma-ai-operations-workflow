@@ -89,3 +89,18 @@ The workflow generates:
 - Marketing Recommendation
 - Risk Level
 - Daily Operational Summary
+
+- ## Repository Contents
+
+| File | Description |
+|------|-------------|
+| README.md | Project overview and architecture |
+| Karma group Free LLM test.json | Exported n8n workflow |
+| 1 Overall n8n Flow.png | Complete workflow |
+| 2 Weather API and Output Json.png | Open-Meteo integration |
+| 3 Resort wise Details.png | Business context |
+| 4 Building the AI Prompt.png | Prompt engineering |
+| 5 Ollama Output.png | AI-generated response |
+| 5.1 Ollama setup and Hosting.png | Self-hosted Ollama on Hostinger VPS |
+| 6 Output Parser code Node.png | JSON parsing |
+| 7 Google Sheet output.png | Final reporting output |
