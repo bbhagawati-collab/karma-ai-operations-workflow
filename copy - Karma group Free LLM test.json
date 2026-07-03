@@ -1,0 +1,442 @@
+{
+  "name": "copy - Karma group Free LLM test",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        -96
+      ],
+      "id": "0edde826-674a-4d30-8aca-1ea43b4c0b8d",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "llama3.2:latest",
+          "mode": "list",
+          "cachedResultName": "llama3.2:latest"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "options": {
+          "num_predict": 1500
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -96
+      ],
+      "id": "39d09e2e-9b6c-4ec1-a294-286a8bb80502",
+      "name": "Message a model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "NYO0rCvNDzHHpaGt",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=-8.8296&longitude=115.0849&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -448,
+        -96
+      ],
+      "id": "ea84e5ba-e967-42cb-8458-15fcadb900e7",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d3181882-4304-4b0f-a085-38b306885f4e",
+              "name": "resort",
+              "value": "Karma Kandara",
+              "type": "string"
+            },
+            {
+              "id": "3a4319a8-95ee-40fe-ab48-d042622fc9ce",
+              "name": "occupancy",
+              "value": "92%",
+              "type": "string"
+            },
+            {
+              "id": "bb31e214-bb94-40b8-a4a2-aeb18973429c",
+              "name": "season",
+              "value": "Peak Season",
+              "type": "string"
+            },
+            {
+              "id": "e29f2da5-52c4-4c1b-bff3-79e16bd27da1",
+              "name": "specialEvent",
+              "value": "No",
+              "type": "string"
+            },
+            {
+              "id": "47d2311b-49f2-419e-9d86-69934e108c4b",
+              "name": "reportDate",
+              "value": "={{ $now.toISODate() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -224,
+        -96
+      ],
+      "id": "83a2d260-fa3e-408a-8559-eddc6c5214c7",
+      "name": "Karma Kandara"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f9a4e319-4b93-4d80-b18f-bca6e94a131f",
+              "name": "prompt",
+              "value": "=You are an AI Operations Advisor for Karma Kandara Resort.\n\nYour role is to act as an experienced Resort General Manager and Operations Manager.\n\nAnalyze today's weather and operational context and generate operational recommendations for the resort.\n\nApply the following business rules:\n\n1. If occupancy is greater than 90%, recommend increasing staffing in guest-facing departments such as Front Office, Housekeeping, Restaurants, Concierge and Pool Services.\n\n2. If temperature exceeds 32°C, recommend hydration stations, shaded seating, cooling breaks for staff and promotion of morning and evening outdoor activities.\n\n3. If rainfall exceeds 5 mm, recommend indoor guest activities and review outdoor event schedules.\n\n4. If wind speed exceeds 20 km/h, recommend reviewing beach operations and water sports.\n\n5. Keep all recommendations practical and suitable for a luxury resort.\n\nReturn ONLY valid JSON.\nDo NOT return markdown.\nDo NOT explain your reasoning.\nDo NOT add any text before or after the JSON.\n\nToday's Information\n\nReport Date: {{ $json.reportDate }}\n\nResort: {{ $json.resort }}\n\nOccupancy: {{ $json.occupancy }}\n\nSeason: {{ $json.season }}\n\nSpecial Event: {{ $json.specialEvent }}\n\nTemperature: {{ $json.current.temperature_2m }} °C\n\nHumidity: {{ $json.current.relative_humidity_2m }} %\n\nRainfall: {{ $json.current.rain }} mm\n\nWind Speed: {{ $json.current.wind_speed_10m }} km/h\n\nReturn ONLY valid JSON.\n\nPopulate every field below.\n\nDo NOT leave any field empty.\n\nIf there is no significant recommendation, provide a sensible operational recommendation instead of leaving it blank.\n\nUse today's weather and operational context to generate realistic recommendations.\n\n{\n  \"reportDate\": \"{{ $json.reportDate }}\",\n  \"resort\": \"{{ $json.resort }}\",\n  \"overallStatus\": \"\",\n  \"temperature\": \"{{ $json.current.temperature_2m }}\",\n  \"humidity\": \"{{ $json.current.relative_humidity_2m }}\",\n  \"rainfall\": \"{{ $json.current.rain }}\",\n  \"windSpeed\": \"{{ $json.current.wind_speed_10m }}\",\n  \"occupancy\": \"{{ $json.occupancy }}\",\n  \"season\": \"{{ $json.season }}\",\n  \"specialEvent\": \"{{ $json.specialEvent }}\",\n  \"staffingRecommendation\": \"\",\n  \"guestExperienceRecommendation\": \"\",\n  \"operationsRecommendation\": \"\",\n  \"marketingRecommendation\": \"\",\n  \"riskLevel\": \"\",\n  \"summary\": \"\"\n}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -96
+      ],
+      "id": "1e1dfa0b-52b5-46dc-b9fd-b6f77e66de8b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Read the JSON string from Ollama\nlet jsonString = $input.first().json.content;\n\n// Remove markdown if Ollama ever returns it\njsonString = jsonString.replace(/```json/g, \"\");\njsonString = jsonString.replace(/```/g, \"\");\n\n// Remove escaped newlines and tabs\njsonString = jsonString.replace(/\\\\n/g, \"\");\njsonString = jsonString.replace(/\\\\t/g, \"\");\n\n// Remove escaped quotes\njsonString = jsonString.replace(/\\\\\"/g, '\"');\n\n// Trim whitespace\njsonString = jsonString.trim();\n\n// Parse JSON\nconst parsed = JSON.parse(jsonString);\n\n// Return parsed object\nreturn [\n  {\n    json: parsed\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        592,
+        -96
+      ],
+      "id": "f3f40e49-9373-4449-8bec-0c405f726dbf",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1DRcIuDmDwQEEp1CV93W9pbrAha_D0hNYZN30VkmCjq8",
+          "mode": "list",
+          "cachedResultName": "Karma group weather",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DRcIuDmDwQEEp1CV93W9pbrAha_D0hNYZN30VkmCjq8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DRcIuDmDwQEEp1CV93W9pbrAha_D0hNYZN30VkmCjq8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Report Date": "={{ $json.reportDate }}",
+            "Resort": "={{ $json.resort }}",
+            "Overall Status": "={{ $json.overallStatus }}",
+            "Occupancy": "={{ $json.occupancy }}",
+            "Season": "={{ $json.season }}",
+            "specialEvent": "={{ $json.specialEvent }}",
+            "Temperature": "={{ $json.temperature }}",
+            "Humidity": "={{ $json.humidity }}",
+            "Rain": "={{ $json.rainfall }}",
+            "wind": "={{ $json.windSpeed }}",
+            "staffing": "={{ $json.staffingRecommendation }}",
+            "Guest Experience": "={{ $json.guestExperienceRecommendation }}",
+            "Operations": "={{ $json.operationsRecommendation }}",
+            "Marketing": "={{ $json.marketingRecommendation }}",
+            "Risk": "={{ $json.riskLevel }}",
+            "SUmmary": "={{ $json.summary }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Report Date",
+              "displayName": "Report Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resort",
+              "displayName": "Resort",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Occupancy",
+              "displayName": "Occupancy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Season",
+              "displayName": "Season",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "specialEvent",
+              "displayName": "specialEvent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Temperature",
+              "displayName": "Temperature",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Humidity",
+              "displayName": "Humidity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Rain",
+              "displayName": "Rain",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "wind",
+              "displayName": "wind",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Overall Status",
+              "displayName": "Overall Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "staffing",
+              "displayName": "staffing",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guest Experience",
+              "displayName": "Guest Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Operations",
+              "displayName": "Operations",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Marketing",
+              "displayName": "Marketing",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Risk",
+              "displayName": "Risk",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "SUmmary",
+              "displayName": "SUmmary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        800,
+        -96
+      ],
+      "id": "98da5d76-45c7-40c4-873d-4f51174d2831",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Yyi9keP23wyKTSPy",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Karma Kandara",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Karma Kandara": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "747e53a8-f59e-4c44-bbde-24f9f56cfd53",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "af46ab8574eedbd54eae9bb43df76ab7b40fb7ae2a638c6ae73af1c1f76a4250"
+  },
+  "nodeGroups": [],
+  "id": "BJ0RGF8dow3EdrIy",
+  "tags": []
+}
